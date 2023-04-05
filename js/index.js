@@ -1,54 +1,53 @@
 let formEl = elSelector('.js-form');
 let elInput = elSelector('.js-input', formEl);
 let elList = elSelector('.js-list');
+let todoTemplate = elSelector('.todo-Template').content;
 
 let todoArr = [];
 
-let onEdit = () => {
-    console.log('Edit');
+let onEdit = (evt) => {
+    todoArr.forEach((el) => {
+        if(el.id == evt.target.dataset.id-0){
+            let editText = prompt(el.text);
+            el.text = editText;
+        }
+    })
+
+    todoRender(todoArr)
 }
 
-let onDelete = () => {
-    console.log('Delete');
+let onDelete = (evt) => {
+    delArr = []; 
+
+    todoArr.forEach(element => {
+        if(element.id != evt.target.dataset.id - 0){
+            delArr.push(element);
+        }
+    })
+    todoRender(delArr);
+    todoArr = delArr;
 }
 
-let todoRender = () => {
+let todoRender = (arr) => {
 
     elList.innerHTML = null;
-    for(let i=0; i<todoArr.length; i++){
+    for(let i=0; i<arr.length; i++){
 
-        let elLi = createEl('li');
-        let elCheckInput = createEl('input');
-        let elSpan = createEl('span');
-        let elBtnWrapper = createEl('div');
-        let elEditBtn = createEl('button');
-        let elDeleteBtn = createEl('button');
-
-        elLi.className = 'd-flex list-group-item align-items-center';
-        elCheckInput.className = 'form-check-input me-2';
-        elCheckInput.type = 'checkbox';
-        elSpan.textContent = todoArr[i].text;
-        elBtnWrapper.className = 'ms-auto';
-        elEditBtn.className = 'btn btn-success';
-        elEditBtn.textContent = 'Edit';
-        elDeleteBtn.className = 'btn btn-danger ms-2';
-        elDeleteBtn.textContent = 'Delete';
+        let newTask = todoTemplate.cloneNode(true);
         
-        
-        elList.appendChild(elLi); 
-        elLi.appendChild(elCheckInput);
-        elLi.appendChild(elSpan);
-        elLi.appendChild(elBtnWrapper);
-        elBtnWrapper.appendChild(elEditBtn);
-        elBtnWrapper.appendChild(elDeleteBtn);   
+        let todoText = newTask.querySelector('.todoText');
+        todoText.textContent = arr[i].text;
 
-        elEditBtn.addEventListener('click', onEdit);
-        elDeleteBtn.addEventListener('click', onDelete);
-        elCheckInput.addEventListener('click', onCheck = () => {
-            if(elCheckInput.checked){
-                elSpan.className = 'text-decoration-line-through';
-            }else(elSpan.className = 'text-decoration-none');
-        });
+        let btnDelete = newTask.querySelector('.btn-delete');
+        btnDelete.addEventListener('click', onDelete)
+        btnDelete.dataset.id = arr[i].id
+
+        let btnEdit = newTask.querySelector('.btn-edit');
+        btnEdit.addEventListener('click', onEdit)
+        btnEdit.dataset.id = arr[i].id
+        
+        elList.appendChild(newTask); 
+        
     }
 }
 
@@ -57,18 +56,14 @@ var onSubmit = (evt) => {
 
     let inputValue = elInput.value.trim();
 
-    if(!(inputValue)){
-        alert('Input todo');
-    }
-
     var newTodo = {
-        id: todoArr.length + 1,
+        id: todoArr.at(0) ? todoArr.at(0)?.id + 1 : 1,
         text: inputValue,
         isCompleted: false
     }
 
     todoArr.unshift(newTodo);
-    todoRender();
+    todoRender(todoArr);
     elInput.value = null;
     elInput.focus();
 }

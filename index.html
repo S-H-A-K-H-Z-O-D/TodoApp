@@ -25,13 +25,21 @@
     </div>
 
     <div class="d-flex justify-content-center mt-3">
-
         <ul class="js-list list-unstyled w-50 list-group"></ul>
-    
-
     </div>
 
+    <template class="todo-Template">
 
+        <li class="d-flex list-group-item align-items-center">
+            <input class="form-check-input me-2 checkInput" type="checkbox">
+            <span class="todoText"></span>
+            <div class="ms-auto">
+                <button class="btn btn-success btn-edit">Edit</button>
+                <button class="btn btn-danger ms-2 btn-delete">Delete</button>
+            </div>
+        </li>
+
+    </template>
 
     <script src="./js/util.js"></script>
     <script src="./js/index.js"></script>
