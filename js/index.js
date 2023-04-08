@@ -2,11 +2,13 @@ let formEl = elSelector('.js-form');
 let elInput = elSelector('.js-input', formEl);
 let elList = elSelector('.js-list');
 let todoTemplate = elSelector('.todo-Template').content;
+let elCount = elSelector('.count');
         
 
 let data = JSON.parse(localStorage.getItem('todoArr'))
 let todoArr = data ? data : [];
 
+elCount.textContent = todoArr.length
 
 let onEdit = (evt) => {
     todoArr.forEach((el) => {
@@ -30,6 +32,7 @@ let onDelete = (evt) => {
     })
     todoRender(delArr);
     todoArr = delArr;
+    elCount.textContent = delArr.length
     localStorage.setItem('todoArr', JSON.stringify(delArr))
 }
 
@@ -100,6 +103,7 @@ var onSubmit = (evt) => {
     todoArr.unshift(newTodo);
     todoRender(todoArr);
     localStorage.setItem('todoArr', JSON.stringify(todoArr))
+    elCount.textContent = todoArr.length
     elInput.value = null;
     elInput.focus();
 }
