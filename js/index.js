@@ -5,14 +5,25 @@ let todoTemplate = elSelector('.todo-Template').content;
 let elCount = elSelector('.count');
         
 
-let data = JSON.parse(localStorage.getItem('todoArr'))
-let todoArr = data ? data : [];
+let data = JSON.parse(localStorage.getItem('todoArr')) || [];
+let todoArr = data;
 
 elCount.textContent = todoArr.length
 
-let onEdit = (evt) => {
+let onCheck = (Id, isCompleted) => {
+    todoArr.forEach(elem => {
+        if(elem.id == Id){
+            elem.isCompleted = isCompleted;
+        }
+    })
+
+    localStorage.setItem('todoArr', JSON.stringify(todoArr));
+    todoRender(todoArr);
+}
+
+let onEdit = (Id) => {
     todoArr.forEach((el) => {
-        if(el.id == evt.target.dataset.id-0){
+        if(el.id == Id){
             let editText = prompt(el.text);
             el.text = editText;
         }
@@ -22,11 +33,11 @@ let onEdit = (evt) => {
     localStorage.setItem('todoArr', JSON.stringify(todoArr))
 }
 
-let onDelete = (evt) => {
+let onDelete = (Id) => {
     delArr = []; 
 
     todoArr.forEach(element => {
-        if(element.id != evt.target.dataset.id - 0){
+        if(element.id != Id){
             delArr.push(element);
         }
     })
@@ -36,63 +47,39 @@ let onDelete = (evt) => {
     localStorage.setItem('todoArr', JSON.stringify(delArr))
 }
 
-
-
 let todoRender = (arr) => {
 
     elList.innerHTML = null;
     for(let i=0; i<arr.length; i++){
 
         let newTask = todoTemplate.cloneNode(true);
-        
+        let elLi = newTask.querySelector('.todoLi');
         let todoText = newTask.querySelector('.todoText');
-        todoText.textContent = arr[i].text;
-
         let btnDelete = newTask.querySelector('.btn-delete');
-        btnDelete.addEventListener('click', onDelete);
-        btnDelete.dataset.id = arr[i].id
-
         let btnEdit = newTask.querySelector('.btn-edit');
-        btnEdit.addEventListener('click', onEdit);
-        btnEdit.dataset.id = arr[i].id
-
         let elCheck = newTask.querySelector('.checkInput');
 
-        let onCheck = evt => {
-            localStorage.setItem('todoArr', JSON.stringify(todoArr))
-            todoArr.forEach(element => {
-                if(element.id == evt.target.dataset.id - 0){
-                    if(elCheck.checked){
-                        element.isCompleted = true;
-                        todoText.classList.add('text-decoration-line-through')
-                    }else{
-                        element.isCompleted = false;
-                        todoText.classList.remove('text-decoration-line-through')
-                    }
-                }
-            })
-            localStorage.setItem('todoArr', JSON.stringify(todoArr))
-        }
-
-        
-        if(arr[i].isCompleted == true){
+        if(arr[i].isCompleted){
             todoText.classList.add('text-decoration-line-through');
-            elCheck.checked = true;
         }
         
-
-        elCheck.addEventListener('click', onCheck); 
-        elCheck.dataset.id = arr[i].id;
+        elCheck.checked = arr[i].isCompleted;
+        todoText.textContent = arr[i].text;
+        elLi.dataset.id = arr[i].id;
         
         elList.appendChild(newTask); 
         
     }
 }
 
-var onSubmit = (evt) => {
+let onSubmit = (evt) => {
     evt.preventDefault();
 
     let inputValue = elInput.value.trim();
+
+    if(!inputValue){
+        return alert('Input task!')
+    }
 
     var newTodo = {
         id: todoArr.at(0) ? todoArr.at(0)?.id + 1 : 1,
@@ -108,6 +95,20 @@ var onSubmit = (evt) => {
     elInput.focus();
 }
 
+let eventDelegation = (evt) => {
+    let parentElement = evt.target.closest('.todoLi');
+    elId = Number(parentElement.dataset.id);
+
+    if(evt.target.matches('.btn-delete')){
+        onDelete(elId);
+    }else if(evt.target.matches('.btn-edit')){
+        onEdit(elId);
+    }else if(evt.target.matches('.checkInput')){
+        onCheck(elId, evt.target.checked);
+    }
+}
+
 todoRender(todoArr);
 
 formEl.addEventListener('submit', onSubmit);
+elList.addEventListener('click', eventDelegation)
