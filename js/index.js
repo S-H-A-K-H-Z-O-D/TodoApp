@@ -3,10 +3,15 @@ let elInput = elSelector('.js-input', formEl);
 let elList = elSelector('.js-list');
 let todoTemplate = elSelector('.todo-Template').content;
 let elCount = elSelector('.count');
+let elDayTime = elSelector('.dayTime');
+let elNightTime = elSelector('.nightTime');
+let elBg = elSelector('.bgImg');
+let elTodoBtns = elSelector('.todoBtns');
         
 
 let data = JSON.parse(localStorage.getItem('todoArr')) || [];
 let todoArr = data;
+console.log(data)
 
 elCount.textContent = todoArr.length
 
@@ -43,8 +48,44 @@ let onDelete = (Id) => {
     })
     todoRender(delArr);
     todoArr = delArr;
-    elCount.textContent = delArr.length
+    elCount.textContent = delArr.length;
     localStorage.setItem('todoArr', JSON.stringify(delArr))
+}
+
+let onAll = () => {
+    todoArr = data;
+    todoRender(todoArr);
+    elCount.textContent = todoArr.length;
+}
+
+let onActive = () => {
+    todoArr = data;
+    let activeArr = [];
+
+    todoArr.forEach(el => {
+        if(!el.isCompleted){
+            activeArr.push(el);
+        }
+    })
+
+    todoRender(activeArr);
+    todoArr = activeArr;
+    elCount.textContent = activeArr.length
+}
+
+let onCompleted = () => {
+    todoArr = data;
+    let completedArr = [];
+
+    todoArr.forEach(el => {
+        if(el.isCompleted){
+            completedArr.push(el);
+        }
+    })
+
+    todoRender(completedArr);
+    todoArr = completedArr;
+    elCount.textContent = completedArr.length
 }
 
 let todoRender = (arr) => {
@@ -55,8 +96,6 @@ let todoRender = (arr) => {
         let newTask = todoTemplate.cloneNode(true);
         let elLi = newTask.querySelector('.todoLi');
         let todoText = newTask.querySelector('.todoText');
-        let btnDelete = newTask.querySelector('.btn-delete');
-        let btnEdit = newTask.querySelector('.btn-edit');
         let elCheck = newTask.querySelector('.checkInput');
 
         if(arr[i].isCompleted){
@@ -108,7 +147,36 @@ let eventDelegation = (evt) => {
     }
 }
 
+let btnsEventDelegation = (evt) => {
+    if(evt.target.matches('.allTodo')){
+        onAll();
+    }else if(evt.target.matches('.activeTodo')){
+        onActive();
+    }else if(evt.target.matches('.completedTodo')){
+        onCompleted();
+    }
+}
+
+let changeDayTime = () => {
+    elNightTime.classList.remove('d-none')
+    elDayTime.classList.add('d-none')
+    elBg.classList.add('bg-dark');
+    elInput.classList.add('bg-dark');
+    elInput.classList.add('text-white');
+}
+
+let changeNightTime = () => {
+    elNightTime.classList.add('d-none')
+    elDayTime.classList.remove('d-none')
+    elBg.classList.remove('bg-dark');
+    elInput.classList.remove('bg-dark');
+    elInput.classList.remove('text-white');
+}
+
 todoRender(todoArr);
 
 formEl.addEventListener('submit', onSubmit);
-elList.addEventListener('click', eventDelegation)
+elList.addEventListener('click', eventDelegation);
+elTodoBtns.addEventListener('click', btnsEventDelegation)
+elDayTime.addEventListener('click', changeDayTime);
+elNightTime.addEventListener('click', changeNightTime);
