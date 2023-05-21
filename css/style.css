@@ -1,17 +1,23 @@
-.bgImg{
-    background: url(../img/432499.png) no-repeat;
-    background-size: 100% 400px;
+.bgImg {
+  background: url(../img/432499.png) no-repeat;
+  background-size: 100% 500px;
 }
 
 @media only screen and (max-width: 900px) {
-    .js-form, .js-list{
-        width: 75%!important;
-    }
+  .js-form,
+  .js-list,
+  .titleWrapper,
+  .btnsWrapper {
+    width: 75% !important;
+  }
 }
 
 @media only screen and (max-width: 500px) {
-    .js-form, .js-list{
-        width: 100%!important;
-        padding: 0 20px;
-    }
+  .js-form,
+  .js-list,
+  .titleWrapper,
+  .btnsWrapper {
+    width: 100% !important;
+    padding: 0 20px;
+  }
 }

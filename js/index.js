@@ -163,6 +163,10 @@ let changeDayTime = () => {
     elBg.classList.add('bg-dark');
     elInput.classList.add('bg-dark');
     elInput.classList.add('text-white');
+    document.querySelectorAll('.todoLi').forEach(li => {
+        li.classList.add('bg-dark')
+        li.classList.add('text-white')
+    })
 }
 
 let changeNightTime = () => {
@@ -171,6 +175,10 @@ let changeNightTime = () => {
     elBg.classList.remove('bg-dark');
     elInput.classList.remove('bg-dark');
     elInput.classList.remove('text-white');
+    document.querySelectorAll('.todoLi').forEach(li => {
+        li.classList.remove('bg-dark')
+        li.classList.remove('text-white')
+    })
 }
 
 todoRender(todoArr);
